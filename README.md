@@ -1,3 +1,4 @@
+
 # NGO Volunteer Connect
 
 A full-stack web application for the Indian market that connects NGOs with volunteers. The app uses:
@@ -60,3 +61,5 @@ Set `VITE_API_BASE_URL` in `frontend/.env` if the backend is not running at `htt
 - `PATCH /api/auth/admin/verify-user/<user_id>/`: Admin-only verification update.
 - `GET, POST /api/opportunities/`: List or create NGO opportunities.
 - `POST /api/opportunities/<opportunity_id>/apply/`: Volunteer application endpoint.
+
+<img width="1350" height="594" alt="image" src="https://github.com/user-attachments/assets/c86dc14c-d47c-485e-b432-7250f1fbf22a" />
