@@ -14,41 +14,46 @@ on:
 jobs:
 
   backend:
-    name: Backend Build & Check
-    runs-on: ubuntu-latest
+  name: Backend Build & Check
+  runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: backend
+  env:
+    SECRET_KEY: dummy-secret-key
+    DEBUG: True
+    MONGO_URI: mongodb://localhost:27017
+    MONGO_DB_NAME: ngo_volunteer_connect
+    JWT_SECRET: dummy-jwt-secret
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+  defaults:
+    run:
+      working-directory: backend
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-      - name: Install Backend Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
 
-      - name: Run Django Checks
-        env:
-          SECRET_KEY: dummy-secret-key
-          DEBUG: True
-          MONGO_URI: mongodb://localhost:27017
-          MONGO_DB_NAME: ngo_volunteer_connect
-          JWT_SECRET: dummy-jwt-secret
-        run: |
-          python manage.py check
-      - name: Run Black Formatter Check
-        run: black --check .
+    - name: Install Backend Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Run Flake8 Lint
-        run: flake8 .
+    - name: Run Django Checks
+      run: |
+        python manage.py check
+
+    - name: Run Black Formatter Check
+      run: black --check .
+
+    - name: Run Flake8 Lint
+      run: flake8 .
+
+    - name: Run Backend Tests
+      run: pytest
   frontend:
     name: Frontend Build
     runs-on: ubuntu-latest

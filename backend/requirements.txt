@@ -8,3 +8,5 @@ bcrypt==4.2.1
 gunicorn==23.0.0
 black
 flake8
+pytest
+pytest-django
