@@ -3,12 +3,9 @@ import {
   ClipboardList,
   Clock,
   UsersRound,
-  TrendingUp,
   CheckCircle,
   XCircle,
-  MoreVertical,
   Search,
-  Filter,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import DashboardHeader from "../components/DashboardHeader";
@@ -268,7 +265,7 @@ export default function AdminDashboard() {
                     </td>
                   </tr>
                 ) : (
-                  filteredUsers.map((u, index) => (
+                  filteredUsers.map((u) => (
                     <tr 
                       key={u.id} 
                       className="hover:bg-green-50/50 transition-colors duration-150 group border-b border-green-100"

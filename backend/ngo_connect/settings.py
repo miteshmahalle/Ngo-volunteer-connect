@@ -3,16 +3,18 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("SECRET_KEY", "development-only-secret-key")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")]
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+]
 
 INSTALLED_APPS = [
-     "django.contrib.auth",
+    "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.staticfiles",
     "corsheaders",
@@ -75,7 +77,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ["accounts.authentication.MongoJWTAuthentication"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "accounts.authentication.MongoJWTAuthentication"
+    ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
 }
 
@@ -83,4 +87,3 @@ MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "ngo_volunteer_connect")
 JWT_SECRET = os.getenv("JWT_SECRET", SECRET_KEY)
 JWT_EXPIRY_MINUTES = int(os.getenv("JWT_EXPIRY_MINUTES", "1440"))
-

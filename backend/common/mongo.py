@@ -11,4 +11,3 @@ def get_client() -> MongoClient:
 
 def get_db():
     return get_client()[settings.MONGO_DB_NAME]
-

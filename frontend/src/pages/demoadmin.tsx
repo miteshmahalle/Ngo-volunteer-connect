@@ -3,12 +3,7 @@ import {
   ClipboardList,
   Clock,
   UsersRound,
-  TrendingUp,
-  CheckCircle,
-  XCircle,
-  MoreVertical,
   Search,
-  Filter,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import DashboardHeader from "../components/DashboardHeader";
@@ -38,8 +33,8 @@ export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [users, setUsers] = useState<RegisteredUser[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterRole, setFilterRole] = useState<"all" | "ngo" | "volunteer">("all");
-  const [filterStatus, setFilterStatus] = useState<"all" | "verified" | "pending">("all");
+  const [filterRole] = useState<"all" | "ngo" | "volunteer">("all");
+  const [filterStatus] = useState<"all" | "verified" | "pending">("all");
   const [stats, setStats] = useState<Stats>({
     ngos: 0,
     volunteers: 0,

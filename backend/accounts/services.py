@@ -7,7 +7,6 @@ from pymongo import ASCENDING
 
 from common.mongo import get_db
 
-
 VALID_ROLES = {"ngo", "volunteer", "admin"}
 
 
@@ -15,10 +14,9 @@ def ensure_indexes() -> None:
     db = get_db()
     db.users.create_index([("email", ASCENDING)], unique=True)
     db.users.create_index(
-        [("profile.registration_number", ASCENDING)],
-        unique=True,
-        sparse=True
+        [("profile.registration_number", ASCENDING)], unique=True, sparse=True
     )
+
 
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
@@ -53,4 +51,3 @@ def public_user(user: dict) -> dict:
         "profile": user.get("profile", {}),
         "created_at": user.get("created_at"),
     }
-

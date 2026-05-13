@@ -16,4 +16,3 @@ def serialize_document(document: dict | None) -> dict | None:
     serialized = dict(document)
     serialized["id"] = str(serialized.pop("_id"))
     return serialized
-

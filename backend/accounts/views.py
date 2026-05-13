@@ -37,42 +37,71 @@ def register(request):
     aadhaar_pattern = r"^\d{12}$"
     reg_pattern = r"^\d+$"
     if role not in {"ngo", "volunteer"}:
-      return Response({"detail": "Role must be ngo or volunteer"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"detail": "Role must be ngo or volunteer"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     if not name or not email or not password or not phone or not city or not state:
-      return Response({"detail": "Name, email, password, phone, city, and state are required"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"detail": "Name, email, password, phone, city, and state are required"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     if not re.match(email_pattern, email):
-      return Response({"detail": "Email must be a valid Gmail address like mitesh123@gmail.com"}, status=status.HTTP_400_BAD_REQUEST)
-   
+        return Response(
+            {"detail": "Email must be a valid Gmail address like mitesh123@gmail.com"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
     if not re.match(phone_pattern, phone):
-      return Response({"detail": "Phone number must be exactly 10 digits"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"detail": "Phone number must be exactly 10 digits"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     if role == "ngo":
-         registration_number = str(data.get("registration_number", "")).strip()
-         focus_areas = data.get("focus_areas", [])
+        registration_number = str(data.get("registration_number", "")).strip()
+        focus_areas = data.get("focus_areas", [])
 
-         if not registration_number:
-              return Response({"detail": "NGO registration number is required"}, status=status.HTTP_400_BAD_REQUEST)
+        if not registration_number:
+            return Response(
+                {"detail": "NGO registration number is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-         if not re.match(reg_pattern, registration_number):
-              return Response({"detail": "Registration number must contain only digits"}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match(reg_pattern, registration_number):
+            return Response(
+                {"detail": "Registration number must contain only digits"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-         if not focus_areas:
-              return Response({"detail": "Focus areas are required"}, status=status.HTTP_400_BAD_REQUEST)
+        if not focus_areas:
+            return Response(
+                {"detail": "Focus areas are required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     else:  # volunteer
-          skills = data.get("skills", [])
-          aadhaar_number = str(data.get("aadhaar_number", "")).strip()
+        skills = data.get("skills", [])
+        aadhaar_number = str(data.get("aadhaar_number", "")).strip()
 
-          if not skills:
-              return Response({"detail": "Skills are required"}, status=status.HTTP_400_BAD_REQUEST)
+        if not skills:
+            return Response(
+                {"detail": "Skills are required"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
-          if not aadhaar_number:
-              return Response({"detail": "Aadhaar number is required"}, status=status.HTTP_400_BAD_REQUEST)
+        if not aadhaar_number:
+            return Response(
+                {"detail": "Aadhaar number is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-          if not re.match(aadhaar_pattern, aadhaar_number):
-               return Response({"detail": "Aadhaar number must be exactly 12 digits"}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match(aadhaar_pattern, aadhaar_number):
+            return Response(
+                {"detail": "Aadhaar number must be exactly 12 digits"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
     ensure_indexes()
     user = {
         "name": name,
@@ -83,7 +112,6 @@ def register(request):
         "city": city,
         "state": state,
         "is_verified": False,
-       
         "profile": data.get("profile", {}),
         "created_at": datetime.now(timezone.utc).isoformat(),
         "updated_at": datetime.now(timezone.utc).isoformat(),
@@ -100,8 +128,8 @@ def register(request):
     else:
         user["profile"].update(
             {
-                 "skills": skills,
-                 "aadhaar_number": aadhaar_number,
+                "skills": skills,
+                "aadhaar_number": aadhaar_number,
                 "availability": data.get("availability", ""),
                 "interests": data.get("interests", []),
             }
@@ -110,11 +138,15 @@ def register(request):
     try:
         result = get_db().users.insert_one(user)
     except DuplicateKeyError:
-        return Response({"detail": "Email is already registered"}, status=status.HTTP_409_CONFLICT)
+        return Response(
+            {"detail": "Email is already registered"}, status=status.HTTP_409_CONFLICT
+        )
 
     user["_id"] = result.inserted_id
     token = create_token(user)
-    return Response({"token": token, "user": public_user(user)}, status=status.HTTP_201_CREATED)
+    return Response(
+        {"token": token, "user": public_user(user)}, status=status.HTTP_201_CREATED
+    )
 
 
 @api_view(["POST"])
@@ -133,7 +165,9 @@ def login(request):
 
     user = get_db().users.find_one(query)
     if not user or not verify_password(password, user["password"]):
-        return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(
+            {"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
+        )
 
     return Response({"token": create_token(user), "user": public_user(user)})
 
@@ -143,6 +177,7 @@ def login(request):
 def me(request):
     user = get_db().users.find_one({"_id": to_object_id(request.user.id)})
     return Response({"user": public_user(user)})
+
 
 @api_view(["PATCH"])
 @permission_classes([permissions.IsAuthenticated])
@@ -180,7 +215,7 @@ def update_profile(request):
             if not re.match(r"^\d{12}$", aadhaar_number):
                 return Response(
                     {"detail": "Aadhaar number must be exactly 12 digits"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             update_data["aadhaar_number"] = aadhaar_number
@@ -196,10 +231,14 @@ def update_profile(request):
     )
 
     return Response({"user": public_user(updated_user)})
+
+
 @api_view(["GET"])
 @permission_classes([IsAdminUserRole])
 def pending_users(_request):
-    users = get_db().users.find({"is_verified": False, "role": {"$in": ["ngo", "volunteer"]}})
+    users = get_db().users.find(
+        {"is_verified": False, "role": {"$in": ["ngo", "volunteer"]}}
+    )
     return Response({"users": [public_user(user) for user in users]})
 
 
@@ -209,11 +248,18 @@ def verify_user(request, user_id):
     try:
         object_id = to_object_id(user_id)
     except ValueError:
-        return Response({"detail": "Invalid user id"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"detail": "Invalid user id"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     result = get_db().users.find_one_and_update(
         {"_id": object_id, "role": {"$in": ["ngo", "volunteer"]}},
-        {"$set": {"is_verified": bool(request.data.get("is_verified", True)), "updated_at": datetime.now(timezone.utc).isoformat()}},
+        {
+            "$set": {
+                "is_verified": bool(request.data.get("is_verified", True)),
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+            }
+        },
         return_document=True,
     )
     if not result:
@@ -229,19 +275,25 @@ def platform_stats(_request):
         {
             "ngos": db.users.count_documents({"role": "ngo"}),
             "volunteers": db.users.count_documents({"role": "volunteer"}),
-            "pending_verification": db.users.count_documents({"is_verified": False, "role": {"$in": ["ngo", "volunteer"]}}),
+            "pending_verification": db.users.count_documents(
+                {"is_verified": False, "role": {"$in": ["ngo", "volunteer"]}}
+            ),
             "opportunities": db.opportunities.count_documents({}),
         }
     )
 
+
 @api_view(["GET"])
 @permission_classes([IsAdminUserRole])
 def all_registered_users(_request):
-    users = get_db().users.find(
-        {"role": {"$in": ["ngo", "volunteer"]}}
-    ).sort("created_at", -1)
+    users = (
+        get_db()
+        .users.find({"role": {"$in": ["ngo", "volunteer"]}})
+        .sort("created_at", -1)
+    )
 
     return Response({"users": [public_user(user) for user in users]})
+
 
 @api_view(["POST"])
 @permission_classes([permissions.IsAuthenticated])

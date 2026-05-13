@@ -13,4 +13,3 @@ urlpatterns = [
     path("admin/users/", views.all_registered_users),
     path("change-password/", views.change_password),
 ]
-

@@ -7,4 +7,3 @@ urlpatterns = [
     path("<str:opportunity_id>/apply/", views.apply_to_opportunity),
     path("applications/received/", views.received_applications),
 ]
-

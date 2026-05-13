@@ -26,7 +26,9 @@ class MongoJWTAuthentication(authentication.BaseAuthentication):
 
         parts = header.split()
         if len(parts) != 2 or parts[0].lower() != "bearer":
-            raise exceptions.AuthenticationFailed("Authorization header must be Bearer token")
+            raise exceptions.AuthenticationFailed(
+                "Authorization header must be Bearer token"
+            )
 
         try:
             payload = jwt.decode(parts[1], settings.JWT_SECRET, algorithms=["HS256"])
@@ -47,4 +49,3 @@ class MongoJWTAuthentication(authentication.BaseAuthentication):
             is_verified=bool(user.get("is_verified", False)),
         )
         return mongo_user, payload
-

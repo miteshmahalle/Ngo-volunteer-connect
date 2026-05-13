@@ -44,7 +44,11 @@ jobs:
           JWT_SECRET: dummy-jwt-secret
         run: |
           python manage.py check
+      - name: Run Black Formatter Check
+        run: black --check .
 
+      - name: Run Flake8 Lint
+        run: flake8 .
   frontend:
     name: Frontend Build
     runs-on: ubuntu-latest
