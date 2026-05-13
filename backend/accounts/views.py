@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from common.mongo import get_db
-from common.objectid import serialize_document, to_object_id
+from common.objectid import to_object_id
 
 from .permissions import IsAdminUserRole
 from .services import (
