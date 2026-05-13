@@ -16,7 +16,14 @@ jobs:
   backend:
     name: Backend Build & Check
     runs-on: ubuntu-latest
-
+    
+    services:
+       mongo:
+          image: mongo:7
+          ports:
+                - 27017:27017
+          
+    
     env:
       SECRET_KEY: dummy-secret-key
       DEBUG: True
