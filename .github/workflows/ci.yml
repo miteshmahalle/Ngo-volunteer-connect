@@ -55,24 +55,30 @@ jobs:
     - name: Run Backend Tests
       run: pytest
   frontend:
-    name: Frontend Build
-    runs-on: ubuntu-latest
+  name: Frontend Build
+  runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: frontend
+  defaults:
+    run:
+      working-directory: frontend
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
 
-      - name: Install Frontend Dependencies
-        run: npm install
+    - name: Install Frontend Dependencies
+      run: npm install
 
-      - name: Build React App
-        run: npm run build
+    - name: Run ESLint
+      run: npm run lint
+
+    - name: Run Frontend Tests
+      run: npm run test -- --run
+
+    - name: Build React App
+      run: npm run build
